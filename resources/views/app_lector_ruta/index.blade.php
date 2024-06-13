@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Lector Ruta</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container mt-5">
     <h2 class="mb-4">App Lector Ruta</h2>
-
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <form action="{{ route('app-lector-ruta.store') }}" method="POST" class="mb-4">
         @csrf
         <div class="mb-3">
             <label for="id_usuario" class="form-label">Lector</label>
-            <select class="form-select" id="id_usuario" name="id_usuario">
+            <select class="form-select select2" id="id_usuario" name="id_usuario">
+                <option value="">Seleccione Lector</option>
                 @foreach ($usuarios as $usuario)
                     <option value="{{ $usuario->id }}">{{ $usuario->nombre }}</option>
                 @endforeach
@@ -22,7 +29,8 @@
         </div>
         <div class="mb-3">
             <label for="id_ruta" class="form-label">Ruta</label>
-            <select class="form-select" id="id_ruta" name="id_ruta">
+            <select class="form-select select2" id="id_ruta" name="id_ruta">
+                <option value="">Seleccione Ruta</option>
                 @foreach ($rutas as $ruta)
                     <option value="{{ $ruta->id }}">{{ $ruta->nombre }}</option>
                 @endforeach
@@ -58,5 +66,21 @@
         </tbody>
     </table>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#id_usuario').select2({
+            placeholder: "Seleccione Lector",
+            allowClear: true
+        });
+        $('#id_ruta').select2({
+            placeholder: "Seleccione Ruta",
+            allowClear: true
+        });
+    });
+
+</script>
 </body>
 </html>
