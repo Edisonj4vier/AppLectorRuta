@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Lector Ruta</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container mt-5">
     <h2 class="mb-4">App Lector Ruta</h2>
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     <form action="{{ route('app-lector-ruta.store') }}" method="POST" class="mb-4">
@@ -53,7 +60,7 @@
             <tr>
                 <td><a href="#" class="btn btn-warning">Edita</a></td>
                 <td>
-                    <form action="{{ route('app-lector-ruta.destroy', $appLectorRuta->id) }}" method="POST">
+                    <form action="{{ route('app-lector-ruta.destroy', $appLectorRuta->id) }}" method="POST" class="delete-form">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Elimina</button>
@@ -66,6 +73,9 @@
         </tbody>
     </table>
 </div>
+
+@include('partials.confirmation-modal')
+@include('partials.edition-modal')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -79,8 +89,23 @@
             placeholder: "Seleccione Ruta",
             allowClear: true
         });
-    });
+        setTimeout(function() {
+            $('.alert').alert('close');
+        }, 5000);
+        let formToSubmit;
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
+            formToSubmit = this;
+            $('#confirmationModal').modal('show');
+        });
 
+        $('#confirmDelete').on('click', function() {
+            $('#confirmationModal').modal('hide');
+            if(formToSubmit) {
+                formToSubmit.submit();
+            }
+        });
+    });
 </script>
 </body>
 </html>
