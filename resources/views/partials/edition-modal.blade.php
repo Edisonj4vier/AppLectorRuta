@@ -1,39 +1,36 @@
-<!-- Modal de Edición -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<!-- resources/views/partials/edition-modal.blade.php -->
+
+<div class="modal fade" id="editionModal" tabindex="-1" aria-labelledby="editionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Editar Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editForm" method="POST">
-                    @csrf
-                    @method('PUT')
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editionModalLabel">Editar Ruta del Lector</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <div class="mb-3">
                         <label for="edit_id_usuario" class="form-label">Lector</label>
-                        <select class="form-select select2" id="edit_id_usuario" name="id_usuario">
+                        <select class="form-select" id="edit_id_usuario" name="id_usuario">
                             <option value="">Seleccione Lector</option>
-                            @foreach ($usuarios as $usuario)
-                                <option value="{{ $usuario->id }}">{{ $usuario->nombre }}</option>
-                            @endforeach
+                            <!-- Options will be populated by JS -->
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="edit_id_ruta" class="form-label">Ruta</label>
-                        <select class="form-select select2" id="edit_id_ruta" name="id_ruta">
+                        <select class="form-select" id="edit_id_ruta" name="id_ruta">
                             <option value="">Seleccione Ruta</option>
-                            @foreach ($rutas as $ruta)
-                                <option value="{{ $ruta->id }}">{{ $ruta->nombre }}</option>
-                            @endforeach
+                            <!-- Options will be populated by JS -->
                         </select>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="saveChanges">Guardar</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

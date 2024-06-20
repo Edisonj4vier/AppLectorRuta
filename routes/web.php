@@ -19,4 +19,6 @@ Route::get('/', function () {
 });
 Route::get('/app-lector-ruta', [AppLectorRutaController::class, 'index'])->name('app-lector-ruta.index');
 Route::post('/app-lector-ruta', [AppLectorRutaController::class, 'store'])->name('app-lector-ruta.store');
+Route::get('/app-lector-ruta/{id}/edit', [AppLectorRutaController::class, 'edit'])->name('app-lector-ruta.edit');
+Route::put('/app-lector-ruta/{id}', [AppLectorRutaController::class, 'update'])->name('app-lector-ruta.update');
 Route::delete('/app-lector-ruta/{id}', [AppLectorRutaController::class, 'destroy'])->name('app-lector-ruta.destroy');

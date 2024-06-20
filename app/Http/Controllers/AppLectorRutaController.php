@@ -52,4 +52,31 @@ class AppLectorRutaController extends Controller
 
         return redirect()->route('app-lector-ruta.index')->with('success','Registro eliminado correctamente');
     }
+
+    public function edit($id)
+    {
+        $appLectorRuta = AppLectorRuta::with(['usuario', 'ruta'])->findOrFail($id);
+        $usuarios = Usuario::all();
+        $rutas = Ruta::all();
+
+        return response()->json([
+            'appLectorRuta' => $appLectorRuta,
+            'usuarios' => $usuarios,
+            'rutas' => $rutas
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'id_usuario' => 'required',
+            'id_ruta' => 'required',
+        ]);
+
+        $appLectorRuta = AppLectorRuta::findOrFail($id);
+        $appLectorRuta->update($request->all());
+
+        return redirect()->back()->with('success', 'Ruta del lector actualizada exitosamente');
+    }
+
 }
