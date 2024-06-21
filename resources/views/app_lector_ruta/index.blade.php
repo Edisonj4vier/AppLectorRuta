@@ -1,4 +1,4 @@
-<!-- resources/views/app-lector-ruta/index.blade.php -->
+<!-- resources/views/app_lector_ruta/index.blade.php -->
 
 @extends('layouts.app')
 
@@ -27,40 +27,43 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Agregar</button>
+            <button type="submit" class="btn btn-primary">Agregar</button>
         </form>
 
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th>Editar</th>
-                <th>Eliminar</th>
-                <th>Lector</th>
-                <th>Ruta</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($appLectorRutas as $appLectorRuta)
-                <tr>
-                    <td class="table-actions">
-                        <button type="button" class="btn btn-warning btn-sm edit-btn" data-id="{{ $appLectorRuta->id }}">Editar</button>
-                    </td>
-                    <td class="table-actions">
-                        <form action="{{ route('app-lector-ruta.destroy', $appLectorRuta->id) }}" method="POST" class="delete-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                        </form>
-                    </td>
-                    <td>{{ $appLectorRuta->usuario->nombre }}</td>
-                    <td>{{ $appLectorRuta->ruta->nombre }}</td>
+        @if(session('route_added') && $appLectorRutas->count() > 0)
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr style="background-color: #35a9e2;">
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                    <th>Lector</th>
+                    <th>Ruta</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @foreach ($appLectorRutas as $appLectorRuta)
+                    <tr>
+                        <td class="table-actions">
+                            <button type="button" class="btn btn-warning btn-sm edit-btn" data-id="{{ $appLectorRuta->id }}">Editar</button>
+                        </td>
+                        <td class="table-actions">
+                            <form action="{{ route('app-lector-ruta.destroy', $appLectorRuta->id) }}" method="POST" class="delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                        <td>{{ $appLectorRuta->usuario->nombre }}</td>
+                        <td>{{ $appLectorRuta->ruta->nombre }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        @else
+            <p class="text-center">No hay rutas registradas. Agregue una nueva ruta para mostrar la tabla.</p>
+        @endif
     </div>
 
     @include('partials.confirmation-modal')
     @include('partials.edition-modal')
 @endsection
-

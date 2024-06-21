@@ -13,10 +13,12 @@ class AppLectorRutaController extends Controller
     {
         $usuarios = Usuario::all();
         $rutas = Ruta::all();
-        $appLectorRutas = AppLectorRuta::with('usuario','ruta')->get();
+        $appLectorRutas = AppLectorRuta::with('usuario', 'ruta')->get();
+        $routeAdded = session('route_added', false);
 
-        return view('app_lector_ruta.index', compact('usuarios', 'rutas', 'appLectorRutas'));
+        return view('app_lector_ruta.index', compact('usuarios', 'rutas', 'appLectorRutas', 'routeAdded'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -24,25 +26,28 @@ class AppLectorRutaController extends Controller
             'id_ruta' => 'required|exists:ruta,id',
         ]);
 
-        // Verificar si el lector y la ruta ya estan asignados
-        $registroExistente = AppLectorRuta::where('id_usuario', $request->input('id_usuario'))
-            ->where('id_ruta', $request->input('id_ruta'))
+        // Verificar si el lector y la ruta ya están asignados
+        $registroExistente = AppLectorRuta::where('id_usuario', $request->id_usuario)
+            ->where('id_ruta', $request->id_ruta)
             ->first();
+
         if ($registroExistente) {
             return redirect()->route('app-lector-ruta.index')->with('error', 'El lector ya se encuentra asignado a esta ruta.');
         }
 
-        // Verificar si la ruta ya esta asignado a otro lector
-        $rutaAsignada = AppLectorRuta::where('id_ruta', $request->input('id_ruta'))->first();
+        // Verificar si la ruta ya está asignada a otro lector
+        $rutaAsignada = AppLectorRuta::where('id_ruta', $request->id_ruta)->first();
+
         if ($rutaAsignada) {
             return redirect()->route('app-lector-ruta.index')->with('error', 'La ruta ya se encuentra asignada a otro lector.');
         }
 
-        $appLectorRuta = new AppLectorRuta();
-        $appLectorRuta->id_usuario = $request->id_usuario;
-        $appLectorRuta->id_ruta = $request->id_ruta;
-        $appLectorRuta->save();
-        return redirect()->route('app-lector-ruta.index')->with('success','Registro agregado correctamente');
+        AppLectorRuta::create([
+            'id_usuario' => $request->id_usuario,
+            'id_ruta' => $request->id_ruta
+        ]);
+
+        return redirect()->route('app-lector-ruta.index')->with('success', 'Ruta agregada correctamente')->with('route_added', true);
     }
 
     public function destroy($id)
@@ -50,7 +55,7 @@ class AppLectorRutaController extends Controller
         $appLectorRuta = AppLectorRuta::findOrFail($id);
         $appLectorRuta->delete();
 
-        return redirect()->route('app-lector-ruta.index')->with('success','Registro eliminado correctamente');
+        return redirect()->route('app-lector-ruta.index')->with('success', 'Registro eliminado correctamente');
     }
 
     public function edit($id)
@@ -69,8 +74,8 @@ class AppLectorRutaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_usuario' => 'required',
-            'id_ruta' => 'required',
+            'id_usuario' => 'required|exists:usuario,id',
+            'id_ruta' => 'required|exists:ruta,id',
         ]);
 
         $appLectorRuta = AppLectorRuta::findOrFail($id);
@@ -78,5 +83,4 @@ class AppLectorRutaController extends Controller
 
         return redirect()->back()->with('success', 'Ruta del lector actualizada exitosamente');
     }
-
 }

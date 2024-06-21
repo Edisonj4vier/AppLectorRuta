@@ -27,7 +27,7 @@ body {
     font-weight: 500;
     margin-right: 20px;
 }
-h2{
+h2,p{
     color: #fff;
 }
 .navbar-custom .nav-link:hover {
