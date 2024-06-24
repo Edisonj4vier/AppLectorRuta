@@ -1,112 +1,196 @@
+/* Importar fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+/* Variables de colores */
+:root {
+    --primary-color: #0067b2; /* Azul principal */
+    --secondary-color: #e31e24; /* Rojo */
+    --accent-color: #ffd700; /* Amarillo */
+    --text-color: #333333;
+    --light-gray: #f4f4f4;
+    --white: #ffffff;
+}
+
+/* Estilos generales */
 body {
-    background-color: #28235d;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+    background-image: url('../images/gad.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 }
 
+/* Navbar */
 .navbar-custom {
-    background-color: #28235d;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-custom .navbar-brand,
 .navbar-custom .nav-link {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    margin-right: 20px;
+    color: var(--white);
+    font-weight: 700;
 }
-h2,p{
-    color: #fff;
-}
+
 .navbar-custom .nav-link:hover {
-    color: #80bdff;
+    color: var(--accent-color);
 }
 
+/* Content wrapper */
+.content-wrapper {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    margin-bottom: 60px;
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Formularios */
 .form-label {
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 5px;
-    display: block;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
-/* Estilo general para la tabla */
+.form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 103, 178, 0.25);
+}
+
+/* Botones */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 700;
+}
+
+.btn-primary:hover {
+    background-color: #005091;
+    border-color: #005091;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--white);
+    font-weight: 700;
+}
+
+.btn-secondary:hover {
+    background-color: #c4181e;
+    border-color: #c4181e;
+}
+
+/* Tablas */
 .table {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
-    background-color: #fff; /* Fondo blanco */
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: .25rem; /* Borde ligero */
-    border-collapse: collapse;
+    background-color: var(--white);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Estilo para el encabezado de la tabla */
 .table thead {
-    background-color: #35a9e2; /* Color de fondo azul */
-    color: #fff; /* Color de texto blanco */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Borde inferior ligero */
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-weight: 700;
 }
 
-/* Estilo para las celdas del cuerpo de la tabla */
-.table tbody {
-    background-color: #fff; /* Fondo blanco */
+.table-hover tbody tr:hover {
+    background-color: var(--light-gray);
 }
 
-/* Estilo para las celdas de la tabla */
-.table td, .table th {
-    padding: .75rem;
-    vertical-align: top;
-    border-top: 1px solid rgba(0, 0, 0, 0.1); /* Borde superior ligero */
-}
-
-/* Estilo para el hover sobre las filas de la tabla */
-.table tbody tr:hover {
-    background-color: #f2f2f2; /* Color de fondo gris claro al pasar el mouse */
-}
-
-.select2-container {
-    width: 100% !important;
-}
-
-.select2-container .select2-selection--single {
-    height: auto;
-    line-height: 1.5;
-    padding: .375rem .75rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.select2-container .select2-selection--single:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(0, 123, 255, .25);
-}
-body {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    position: relative;
-}
-
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Footer */
+.footer {
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+    padding: 15px 0;
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: -1;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 300;
+}
+
+/* Select2 personalización */
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    height: 38px;
+    line-height: 38px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--primary-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .table-responsive {
+        border: none;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.content-wrapper {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Accesibilidad */
+.btn, .form-control, .form-select {
+    transition: all 0.3s ease;
+}
+
+.btn:focus, .form-control:focus, .form-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 103, 178, 0.25);
+}
+
+/* Alertas */
+.alert {
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 400;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
 }
