@@ -3,14 +3,14 @@ $(document).ready(function() {
     $('.select2').select2({
         placeholder: "Seleccione una opción",
         allowClear: true,
+        width: '100%'
     });
 
     // Cerrar alertas automáticamente después de 5 segundos
     setTimeout(function() {
         $('.alert').alert('close');
     }, 5000);
-
-    // Manejo del botón de edición
+// Manejo del botón de edición
     $('.edit-btn').on('click', function() {
         const id = $(this).data('id');
         $.get(`/app-lector-ruta/${id}/edit`, function(data) {
@@ -40,10 +40,53 @@ $(document).ready(function() {
         });
     });
 
-    // Manejo del formulario de eliminación con SweetAlert2
+    $('#editForm').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const url = form.attr('action');
+        const method = 'PUT';
+        const data = form.serialize();
+
+        $.ajax({
+            url: url,
+            method: method,
+            data: data,
+            success: function(response) {
+                if (response.success) {
+                    const row = $('tr[data-id="' + response.id + '"]');
+                    row.find('td:eq(2)').text(response.usuario);
+                    row.find('td:eq(3)').text(response.ruta);
+                    $('#editionModal').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: response.message,
+                    });
+                    fetchData(1);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: xhr.responseJSON ? xhr.responseJSON.message : 'Hubo un problema al actualizar el registro.',
+                });
+            }
+        });
+    });
+
+    // Manejo del formulario de eliminación
     $('.delete-form').on('submit', function(e) {
         e.preventDefault();
-        const form = this;
+        const form = $(this);
+        const url = form.attr('action');
+
         Swal.fire({
             title: '¿Está seguro?',
             text: "Esta acción no se puede deshacer.",
@@ -55,7 +98,41 @@ $(document).ready(function() {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit();
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            form.closest('tr').remove();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: response.message,
+                            });
+                            if ($('#appLectorRutaTable tbody tr').length === 0) {
+                                $('#appLectorRutaTable').hide();
+                                $('<p class="text-center">No hay rutas registradas. Agregue una nueva ruta para mostrar la tabla.</p>').insertAfter('#appLectorRutaTable');
+                            }
+                            fetchData(1);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al comunicarse con el servidor.',
+                        });
+                    }
+                });
             }
         });
     });
@@ -87,6 +164,21 @@ $(document).ready(function() {
             });
         }
     });
+    // Manejo de la paginación
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        let page = $(this).attr('href').split('page=')[1];
+        fetchData(page);
+    });
+
+    function fetchData(page) {
+        $.ajax({
+            url: '/app-lector-ruta?page=' + page,
+            success: function(data) {
+               $('#table-container').html(data);
+            }
+        });
+    }
 
     // Mostrar alertas de éxito o error con SweetAlert2
     if (typeof successMessage !== 'undefined' && successMessage) {

@@ -30,6 +30,10 @@ body {
 .navbar-custom {
     background-color: var(--primary-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    top: 0;
 }
 
 .navbar-custom .navbar-brand,
@@ -48,7 +52,7 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
+    margin-top: 100px;
     margin-bottom: 60px;
 }
 
@@ -122,11 +126,13 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--white);
     text-align: center;
     padding: 15px 0;
-    position: fixed;
     bottom: 0;
     width: 100%;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     font-weight: 300;
+    margin-top: auto;
+    flex-shrink: 0;
+    z-index: 1000;
 }
 
 /* Select2 personalización */
@@ -193,4 +199,53 @@ h1, h2, h3, h4, h5, h6 {
 .alert-danger {
     background-color: #f8d7da;
     color: #721c24;
+}
+/* Estilos para la paginación */
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-item:not(:first-child) .page-link {
+    margin-left: 5px;
+}
+
+.page-link {
+    color: var(--primary-color);
+    background-color: var(--white);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    color: var(--white);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.page-item.active .page-link {
+    color: var(--white);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: var(--white);
+    border-color: #dee2e6;
+}
+
+/* Animación para los botones de paginación */
+.page-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Accesibilidad para los botones de paginación */
+.page-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 103, 178, 0.25);
 }
