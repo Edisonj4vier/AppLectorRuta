@@ -6,6 +6,10 @@ $(document).ready(function() {
         width: '100%'
     });
 
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+
     // Cerrar alertas automáticamente después de 5 segundos
     setTimeout(function() {
         $('.alert').alert('close');

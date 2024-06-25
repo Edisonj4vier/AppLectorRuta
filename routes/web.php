@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppLectorRutaController;
+use App\Http\Controllers\LecturaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +23,8 @@ Route::post('/app-lector-ruta', [AppLectorRutaController::class, 'store'])->name
 Route::get('/app-lector-ruta/{id}/edit', [AppLectorRutaController::class, 'edit'])->name('app-lector-ruta.edit');
 Route::put('/app-lector-ruta/{id}', [AppLectorRutaController::class, 'update'])->name('app-lector-ruta.update');
 Route::delete('/app-lector-ruta/{id}', [AppLectorRutaController::class, 'destroy'])->name('app-lector-ruta.destroy');
+Route::get('/lecturas', [LecturaController::class, 'index'])->name('lecturas.index');
+// -------------
+
+Route::get('/lecturas', [LecturaController::class, 'index'])->name('lecturas.index');
+

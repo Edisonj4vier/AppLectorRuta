@@ -249,3 +249,52 @@ h1, h2, h3, h4, h5, h6 {
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(0, 103, 178, 0.25);
 }
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/* Estilos para el sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: var(--primary-color);
+    padding-top: 56px; /* Altura del navbar */
+    z-index: 1030; /* Para que esté encima del navbar */
+    overflow-y: auto; /* Desplazamiento vertical si el contenido es largo */
+}
+
+.sidebar .container {
+    padding: 20px; /* Espacio interno dentro del container */
+}
+
+.sidebar a {
+    color: var(--white);
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background-color: var(--accent-color);
+}
+
+/* Estilos para el contenido principal */
+#content {
+    margin-left: 250px; /* Ancho del sidebar */
+    padding-top: 56px; /* Altura del navbar */
+}
+
+/* Ajuste para dispositivos pequeños */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Ocultar el sidebar en pantallas pequeñas */
+    }
+
+    #content {
+        margin-left: 0;
+    }
+}
