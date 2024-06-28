@@ -8,9 +8,20 @@ $(document).ready(function() {
 
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
+        $('#content').toggleClass('active');
     });
 
-    // Cerrar alertas automáticamente después de 5 segundos
+
+    $(document).ready(function() {
+        $('#sincronizar').click(function() {
+            // Lógica para sincronizar
+            alert('Sincronizando...');
+        });
+        $('#agregarLectura').click(function() {
+            // Lógica para agregar lectura
+            alert('Agregando lectura...');
+        });
+    });    // Cerrar alertas automáticamente después de 5 segundos
     setTimeout(function() {
         $('.alert').alert('close');
     }, 5000);
@@ -42,6 +53,30 @@ $(document).ready(function() {
 
             $('#editionModal').modal('show');
         });
+    });
+    $('.delete-btn').click(function() {
+        var usuarioId = $(this).data('usuario-id');
+        if (confirm('¿Estás seguro de que quieres eliminar todas las asignaciones de este usuario?')) {
+            $.ajax({
+                url: '{{ route("app-lector-ruta.destroy") }}',
+                type: 'DELETE',
+                data: {
+                    usuario_id: usuarioId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(result) {
+                    if (result.success) {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseJSON.message);
+                }
+            });
+        }
     });
 
     $('#editForm').on('submit', function(e) {
@@ -183,7 +218,95 @@ $(document).ready(function() {
             }
         });
     }
+    const table = document.querySelector('table');
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
 
+    table.addEventListener('click', function(e) {
+        const target = e.target.closest('button');
+        if (!target) return;
+
+        const row = target.closest('tr');
+        const id = row.dataset.id;
+
+        if (target.classList.contains('edit-btn')) {
+            // Lógica para editar
+            document.getElementById('editId').value = id;
+            document.getElementById('editLectura').value = row.cells[8].textContent;
+            document.getElementById('editObservacion').value = row.cells[11].textContent;
+            editModal.show();
+        } else if (target.classList.contains('delete-btn')) {
+            // Lógica para eliminar
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteLectura(id);
+                }
+            });
+        }
+    });
+
+    document.getElementById('saveEdit').addEventListener('click', function() {
+        const id = document.getElementById('editId').value;
+        const lectura = document.getElementById('editLectura').value;
+        const observacion = document.getElementById('editObservacion').value;
+        updateLectura(id, lectura, observacion);
+    });
+
+    function updateLectura(id, lectura, observacion) {
+        $.ajax({
+            url: `/lecturas/${id}`,
+            method: 'PUT',
+            data: {
+                lectura: lectura,
+                observacion: observacion,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    Swal.fire('Actualizado!', 'La lectura ha sido actualizada.', 'success');
+                    editModal.hide();
+                    // Actualizar la fila en la tabla
+                    const row = $(`tr[data-id="${id}"]`);
+                    row.find('td:eq(8)').text(lectura);
+                    row.find('td:eq(11)').text(observacion);
+                } else {
+                    Swal.fire('Error!', 'Hubo un problema al actualizar la lectura.', 'error');
+                }
+            },
+            error: function() {
+                Swal.fire('Error!', 'Hubo un problema al comunicarse con el servidor.', 'error');
+            }
+        });
+    }
+
+    function deleteLectura(id) {
+        $.ajax({
+            url: `/lecturas/${id}`,
+            method: 'DELETE',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    Swal.fire('Eliminado!', 'La lectura ha sido eliminada.', 'success');
+                    // Eliminar la fila de la tabla
+                    $(`tr[data-id="${id}"]`).remove();
+                } else {
+                    Swal.fire('Error!', 'Hubo un problema al eliminar la lectura.', 'error');
+                }
+            },
+            error: function() {
+                Swal.fire('Error!', 'Hubo un problema al comunicarse con el servidor.', 'error');
+            }
+        });
+    }
     // Mostrar alertas de éxito o error con SweetAlert2
     if (typeof successMessage !== 'undefined' && successMessage) {
         Swal.fire({

@@ -4,7 +4,7 @@
         <th>Editar</th>
         <th>Eliminar</th>
         <th>Lector</th>
-        <th>Ruta</th>
+        <th>Rutas Asignadas</th>
     </tr>
     </thead>
     <tbody>
@@ -26,7 +26,3 @@
     @endforeach
     </tbody>
 </table>
-
-<div class="d-flex justify-content-center">
-    {{ $appLectorRutas->links() }}
-</div>
