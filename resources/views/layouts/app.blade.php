@@ -20,6 +20,7 @@
         </div>
     </aside>
 
+<<<<<<< HEAD
     <!-- Page Content -->
     <div id="content">
         <!-- Navbar -->
@@ -46,6 +47,39 @@
                 </div>
             </div>
         </nav>
+=======
+<div class="container-fluid">
+    <div class="row">
+         <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('app-lector-ruta.index')}}">
+                            Rutas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">
+                            Reportes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main class="container">
+            <div class="content-wrapper">
+                @yield('content')
+            </div>
+        </main>
+    </div>
+</div>
+
+>>>>>>> temp-branch
 
         <!-- Main Content -->
         <main class="container">
