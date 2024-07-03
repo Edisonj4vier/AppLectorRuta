@@ -2,121 +2,152 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppLectorRuta;
-use App\Models\Ruta;
-use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Helpers\ApiHelper;
+use Illuminate\Validation\ValidationException;
 
 class AppLectorRutaController extends Controller
 {
     public function index(Request $request)
     {
-        $usuarios = Usuario::all();
-        $rutas = Ruta::all();
-        $appLectorRutas = AppLectorRuta::with('usuario', 'ruta')->paginate(10);
-        $routeAdded = session('route_added', false);
-        if ($request->ajax()) {
-            return view('partials.table', compact('appLectorRutas'))->render();
+        try {
+            $response = ApiHelper::request('get', '/lectorruta');
+            $appLectorRutas = $response->json();
+
+            if ($request->ajax()) {
+                return view('partials.table', compact('appLectorRutas'));
+            }
+
+            $usuarios = ApiHelper::request('get', '/obtenerUsuarios/')->json();
+            $rutas = ApiHelper::request('get', '/obtenerRutas/')->json();
+
+            return view('app_lector_ruta.index', compact('usuarios', 'rutas', 'appLectorRutas'));
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+            return back()->with('error', $e->getMessage());
         }
-        return view('app_lector_ruta.index', compact('usuarios', 'rutas', 'appLectorRutas', 'routeAdded'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'id_usuario' => 'required|exists:usuario,id',
-            'id_ruta' => 'required|exists:ruta,id',
+            'id_usuario' => 'required',
+            'id_ruta' => 'required',
         ]);
 
-        // Verificar si el lector y la ruta ya están asignados
-        $registroExistente = AppLectorRuta::where('id_usuario', $request->id_usuario)
-            ->where('id_ruta', $request->id_ruta)
-            ->first();
+        try {
+            $response = ApiHelper::request('post', '/asignarRuta/', [
+                'usuario_id' => $request->id_usuario,
+                'ruta_id' => $request->id_ruta,
+            ]);
 
-        if ($registroExistente) {
-            return redirect()->route('app-lector-ruta.index')->with('error', 'El lector ya se encuentra asignado a esta ruta.');
+            $data = $response->json();
+
+            if ($response->successful()) {
+                // Verificar si el mensaje indica una asignación existente
+                if (strpos($data['mensaje'], 'ya está asignada') !== false) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $data['mensaje']
+                    ], 409); // Código 409 Conflict
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => $data['mensaje']
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $data['detail'] ?? 'No se pudo asignar la ruta'
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al comunicarse con el servidor: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Verificar si la ruta ya está asignada a otro lector
-        $rutaAsignada = AppLectorRuta::where('id_ruta', $request->id_ruta)->first();
-
-        if ($rutaAsignada) {
-            return redirect()->route('app-lector-ruta.index')->with('error', 'La ruta ya se encuentra asignada a otro lector.');
-        }
-
-        AppLectorRuta::create([
-            'id_usuario' => $request->id_usuario,
-            'id_ruta' => $request->id_ruta
-        ]);
-
-        return redirect()->route('app-lector-ruta.index')->with('success', 'Ruta agregada correctamente')->with('route_added', true);
     }
-
     public function destroy($id)
     {
-        $appLectorRuta = AppLectorRuta::findOrFail($id);
-        $appLectorRuta->delete();
+        try {
+            $response = ApiHelper::request('delete', "/lectorruta/{$id}");
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Registro eliminado correctamente'
-        ]);
+            if ($response->successful()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Registro eliminado correctamente'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $response->json()['detail'] ?? 'No se pudo eliminar el registro'
+                ], 422);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function edit($id)
     {
-        $appLectorRuta = AppLectorRuta::with(['usuario', 'ruta'])->findOrFail($id);
-        $usuarios = Usuario::all();
-        $rutas = Ruta::all();
+        try {
+            $appLectorRuta = ApiHelper::request('get', "/lectorruta/{$id}")->json();
+            $usuarios = ApiHelper::request('get', '/obtenerUsuarios/')->json();
+            $rutas = ApiHelper::request('get', '/obtenerRutas/')->json();
 
-        return response()->json([
-            'appLectorRuta' => $appLectorRuta,
-            'usuarios' => $usuarios,
-            'rutas' => $rutas
-        ]);
+            return response()->json([
+                'appLectorRuta' => $appLectorRuta,
+                'usuarios' => $usuarios,
+                'rutas' => $rutas
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_usuario' => 'required|exists:usuario,id',
-            'id_ruta' => 'required|exists:ruta,id',
+            'id_usuario' => 'required',
+            'id_ruta' => 'required',
         ]);
 
-        // Verificar si el lector y la ruta ya están asignados (excluyendo el registro actual)
-        $registroExistente = AppLectorRuta::where('id_usuario', $request->id_usuario)
-            ->where('id_ruta', $request->id_ruta)
-            ->where('id', '!=', $id)
-            ->first();
+        try {
+            $response = ApiHelper::request('put', "/lectorruta/{$id}", [
+                'usuario_id' => $request->id_usuario,
+                'ruta_id' => $request->id_ruta,
+            ]);
 
-        if ($registroExistente) {
+            if ($response->successful()) {
+                $updatedData = $response->json();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Ruta del lector actualizada exitosamente',
+                    'id' => $updatedData['id'],
+                    'usuario' => $updatedData['usuario']['nombre'],
+                    'ruta' => $updatedData['ruta']['nombre']
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $response->json()['detail'] ?? 'No se pudo actualizar el registro'
+                ], 422);
+            }
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'El lector ya se encuentra asignado a esta ruta.'
-            ], 422);
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        // Verificar si la ruta ya está asignada a otro lector (excluyendo el registro actual)
-        $rutaAsignada = AppLectorRuta::where('id_ruta', $request->id_ruta)
-            ->where('id', '!=', $id)
-            ->first();
-
-        if ($rutaAsignada) {
-            return response()->json([
-                'success' => false,
-                'message' => 'La ruta ya se encuentra asignada a otro lector.'
-            ], 422);
-        }
-
-        $appLectorRuta = AppLectorRuta::findOrFail($id);
-        $appLectorRuta->update($request->all());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Ruta del lector actualizada exitosamente',
-            'id' => $appLectorRuta->id,
-            'usuario' => $appLectorRuta->usuario->nombre,
-            'ruta' => $appLectorRuta->ruta->nombre
-        ]);
     }
 }

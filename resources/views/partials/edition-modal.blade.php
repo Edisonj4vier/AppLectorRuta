@@ -1,5 +1,3 @@
-<!-- resources/views/partials/edition-modal.blade.php -->
-
 <div class="modal fade" id="editionModal" tabindex="-1" aria-labelledby="editionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -15,14 +13,12 @@
                         <label for="edit_id_usuario" class="form-label">Lector</label>
                         <select class="form-select" id="edit_id_usuario" name="id_usuario">
                             <option value="">Seleccione Lector</option>
-                            <!-- Options will be populated by JS -->
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="edit_id_ruta" class="form-label">Ruta</label>
                         <select class="form-select" id="edit_id_ruta" name="id_ruta">
                             <option value="">Seleccione Ruta</option>
-                            <!-- Options will be populated by JS -->
                         </select>
                     </div>
                 </div>

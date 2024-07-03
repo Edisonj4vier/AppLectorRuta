@@ -1,5 +1,3 @@
-<!-- resources/views/partials/confirmation-modal.blade.php -->
-
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

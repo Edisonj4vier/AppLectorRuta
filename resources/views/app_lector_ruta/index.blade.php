@@ -9,7 +9,7 @@
             <select class="form-select select2" id="id_usuario" name="id_usuario">
                 <option value="">Seleccione Lector</option>
                 @foreach ($usuarios as $usuario)
-                    <option value="{{ $usuario->id }}">{{ $usuario->nombre }}</option>
+                    <option value="{{ $usuario['id'] }}">{{ $usuario['nombre_usuario'] }}</option>
                 @endforeach
             </select>
         </div>
@@ -18,13 +18,13 @@
             <select class="form-select select2" id="id_ruta" name="id_ruta">
                 <option value="">Seleccione Ruta</option>
                 @foreach ($rutas as $ruta)
-                    <option value="{{ $ruta->id }}">{{ $ruta->nombre }}</option>
+                    <option value="{{ $ruta['id'] }}">{{ $ruta['nombreruta'] }}</option>
                 @endforeach
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Agregar</button>
     </form>
-    @if($appLectorRutas->count() > 0)
+    @if(count($appLectorRutas) > 0)
         <div id="table-container">
             @include('partials.table')
         </div>

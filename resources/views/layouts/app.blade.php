@@ -59,6 +59,14 @@
                             Reportes
                         </a>
                     </li>
+                    <<li class="nav-item mt-auto">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-link nav-link text-danger" style="padding: 0.5rem 1rem; width: 100%; text-align: left;">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </nav>
