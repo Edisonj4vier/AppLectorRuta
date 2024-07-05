@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\ApiHelper;
-use Illuminate\Validation\ValidationException;
 
 class AppLectorRutaController extends Controller
 {
@@ -14,14 +13,28 @@ class AppLectorRutaController extends Controller
             $response = ApiHelper::request('get', '/lectorruta');
             $appLectorRutas = $response->json();
 
+            // Implementar paginación manual
+            $page = $request->input('page', 1);
+            $perPage = 5; // Puedes ajustar este número según tus necesidades
+            $total = count($appLectorRutas);
+
+            $paginatedItems = array_slice($appLectorRutas, ($page - 1) * $perPage, $perPage);
+
+            $pagination = [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'last_page' => ceil($total / $perPage),
+            ];
+
             if ($request->ajax()) {
-                return view('partials.table', compact('appLectorRutas'));
+                return view('partials.table', compact('paginatedItems', 'pagination'));
             }
 
             $usuarios = ApiHelper::request('get', '/obtenerUsuarios/')->json();
             $rutas = ApiHelper::request('get', '/obtenerRutas/')->json();
 
-            return view('app_lector_ruta.index', compact('usuarios', 'rutas', 'appLectorRutas'));
+            return view('app_lector_ruta.index', compact('usuarios', 'rutas', 'paginatedItems', 'pagination'));
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json(['error' => $e->getMessage()], 500);
@@ -118,8 +131,8 @@ class AppLectorRutaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_usuario' => 'required',
-            'id_ruta' => 'required',
+            'id_usuario' => 'required|integer',
+            'id_ruta' => 'required|integer',
         ]);
 
         try {
@@ -129,25 +142,23 @@ class AppLectorRutaController extends Controller
             ]);
 
             if ($response->successful()) {
-                $updatedData = $response->json();
+                $data = $response->json();
                 return response()->json([
                     'success' => true,
-                    'message' => 'Ruta del lector actualizada exitosamente',
-                    'id' => $updatedData['id'],
-                    'usuario' => $updatedData['usuario']['nombre'],
-                    'ruta' => $updatedData['ruta']['nombre']
+                    'message' => $data['mensaje'] ?? 'Lector-ruta actualizado correctamente'
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => $response->json()['detail'] ?? 'No se pudo actualizar el registro'
-                ], 422);
+                    'message' => $response->json()['detail'] ?? 'No se pudo actualizar el lector-ruta'
+                ], $response->status());
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'Error al comunicarse con el servidor: ' . $e->getMessage()
             ], 500);
         }
     }
+
 }

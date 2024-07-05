@@ -151,8 +151,6 @@ $(document).on('click', '.edit-btn', function() {
         url: `/app-lector-ruta/${id}/edit`,
         method: 'GET',
         success: function(data) {
-            console.log('Datos recibidos:', data); // Para depuración
-
             if (data.appLectorRuta && data.usuarios && data.rutas) {
                 const appLectorRuta = data.appLectorRuta;
                 const usuarios = data.usuarios;
@@ -173,6 +171,9 @@ $(document).on('click', '.edit-btn', function() {
                 // Establecer los valores seleccionados
                 $('#edit_id_usuario').val(appLectorRuta.idusuario).trigger('change');
                 $('#edit_id_ruta').val(appLectorRuta.idruta).trigger('change');
+
+                // Actualizar la acción del formulario con el ID correcto
+                $('#editForm').attr('action', $('#editForm').attr('action').replace(':id', id));
 
                 // Mostrar el modal
                 $('#editionModal').modal('show');
@@ -201,12 +202,11 @@ $('#editForm').on('submit', function(e) {
     e.preventDefault();
     const form = $(this);
     const url = form.attr('action');
-    const method = 'PUT';
     const data = form.serialize();
 
     $.ajax({
         url: url,
-        method: method,
+        method: 'POST',
         data: data,
         headers: {
             'X-CSRF-TOKEN': getCSRFToken()
@@ -218,8 +218,11 @@ $('#editForm').on('submit', function(e) {
                     icon: 'success',
                     title: 'Éxito',
                     text: response.message,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetchData(1);
+                    }
                 });
-                fetchData(1); // Actualiza la tabla
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -229,16 +232,18 @@ $('#editForm').on('submit', function(e) {
             }
         },
         error: function(xhr) {
+            let errorMessage = 'Hubo un problema al actualizar el registro.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: xhr.responseJSON ? xhr.responseJSON.message : 'Hubo un problema al actualizar el registro.',
+                text: errorMessage,
             });
         }
     });
 });
-
-
 
 // Manejo del formulario de eliminación
 $(document).on('click', '.delete-btn', function(e) {
@@ -297,6 +302,7 @@ $(document).on('click', '.delete-btn', function(e) {
 });
 
 function fetchData(page) {
+    console.log('Fetching data for page:', page);
     $.ajax({
         url: '/app-lector-ruta?page=' + page,
         method: 'GET',

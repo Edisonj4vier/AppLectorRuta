@@ -24,7 +24,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Agregar</button>
     </form>
-    @if(count($appLectorRutas) > 0)
+    @if(count($paginatedItems) > 0)
         <div id="table-container">
             @include('partials.table')
         </div>

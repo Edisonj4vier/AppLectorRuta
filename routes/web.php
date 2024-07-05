@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppLectorRutaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConsumoLecturaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,3 +34,7 @@ Route::middleware(['auth.token'])->group(function () {
     Route::put('/app-lector-ruta/{id}', [AppLectorRutaController::class, 'update'])->name('app-lector-ruta.update');
     Route::delete('/app-lector-ruta/{id}', [AppLectorRutaController::class, 'destroy'])->name('app-lector-ruta.destroy');
 });
+//------Lecturas
+Route::get('/lecturas', [ConsumoLecturaController::class, 'index'])->name('lecturas.index');
+Route::post('/lecturas/sincronizar', [ConsumoLecturaController::class, 'sincronizar'])->name('lecturas.sincronizar');
+Route::delete('/lecturas/{cuenta}', [ConsumoLecturaController::class, 'destroy'])->name('lecturas.destroy');

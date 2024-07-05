@@ -8,7 +8,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach ($appLectorRutas as $appLectorRuta)
+    @foreach ($paginatedItems as $appLectorRuta)
         <tr>
             <td class="table-actions">
                 <button type="button" class="btn btn-warning btn-sm edit-btn" data-id="{{ $appLectorRuta['id_lectorruta'] }}">Editar</button>
@@ -23,27 +23,27 @@
     </tbody>
 </table>
 
-@if(isset($appLectorRutas['meta']['pagination']))
+@if(isset($pagination))
     <div class="d-flex justify-content-center">
         <nav>
             <ul class="pagination">
-                @if($appLectorRutas['meta']['pagination']['current_page'] > 1)
+                @if($pagination['current_page'] > 1)
                     <li class="page-item">
-                        <a class="page-link" href="{{ url()->current() }}?page={{ $appLectorRutas['meta']['pagination']['current_page'] - 1 }}" aria-label="Previous">
+                        <a class="page-link" href="{{ url()->current() }}?page={{ $pagination['current_page'] - 1 }}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                 @endif
 
-                @for($i = 1; $i <= $appLectorRutas['meta']['pagination']['total_pages']; $i++)
-                    <li class="page-item {{ $i == $appLectorRutas['meta']['pagination']['current_page'] ? 'active' : '' }}">
+                @for($i = 1; $i <= $pagination['last_page']; $i++)
+                    <li class="page-item {{ $i == $pagination['current_page'] ? 'active' : '' }}">
                         <a class="page-link" href="{{ url()->current() }}?page={{ $i }}">{{ $i }}</a>
                     </li>
                 @endfor
 
-                @if($appLectorRutas['meta']['pagination']['current_page'] < $appLectorRutas['meta']['pagination']['total_pages'])
+                @if($pagination['current_page'] < $pagination['last_page'])
                     <li class="page-item">
-                        <a class="page-link" href="{{ url()->current() }}?page={{ $appLectorRutas['meta']['pagination']['current_page'] + 1 }}" aria-label="Next">
+                        <a class="page-link" href="{{ url()->current() }}?page={{ $pagination['current_page'] + 1 }}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
