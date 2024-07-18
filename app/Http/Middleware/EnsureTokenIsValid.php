@@ -6,12 +6,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class RedirectIfAuthenticated
+class EnsureTokenIsValid
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Session::has('access_token')) {
-            return redirect()->route('app-lector-ruta.index');
+        if (!Session::has('access_token')) {
+            return redirect('login');
         }
 
         return $next($request);

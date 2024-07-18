@@ -1,62 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Lector Ruta</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container mt-5">
-    <h2 class="mb-4">App Lector Ruta</h2>
+@extends('layouts.app')
 
-    <form action="{{ route('app-lector-ruta.store') }}" method="POST" class="mb-4">
+@section('content')
+    <h2 class="mb-4 text-center">Registro de ruta del lector</h2>
+    <form id="form-agregar-editar" action="{{ route('app-lector-ruta.store') }}" method="POST" class="mb-4">
         @csrf
         <div class="mb-3">
             <label for="id_usuario" class="form-label">Lector</label>
-            <select class="form-select" id="id_usuario" name="id_usuario">
+            <select class="form-select select2" id="id_usuario" name="id_usuario">
+                <option value="">Seleccione Lector</option>
                 @foreach ($usuarios as $usuario)
-                    <option value="{{ $usuario->id }}">{{ $usuario->nombre }}</option>
+                    <option value="{{ $usuario['id'] }}">{{ $usuario['nombre_usuario'] }}</option>
                 @endforeach
             </select>
         </div>
         <div class="mb-3">
             <label for="id_ruta" class="form-label">Ruta</label>
-            <select class="form-select" id="id_ruta" name="id_ruta">
+            <select class="form-select select2" id="id_ruta" name="id_ruta">
+                <option value="">Seleccione Ruta</option>
                 @foreach ($rutas as $ruta)
-                    <option value="{{ $ruta->id }}">{{ $ruta->nombre }}</option>
+                    <option value="{{ $ruta['id'] }}">{{ $ruta['nombreruta'] }}</option>
                 @endforeach
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Agregar</button>
     </form>
+    @if(count($paginatedItems) > 0)
+        <div id="table-container">
+            @include('partials.table')
+        </div>
+    @else
+        <p class="text-center">No hay rutas registradas. Agregue una nueva ruta para mostrar la tabla.</p>
+    @endif
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Edita</th>
-            <th>Elimina</th>
-            <th>Lector</th>
-            <th>Ruta</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach ($appLectorRutas as $appLectorRuta)
-            <tr>
-                <td><a href="#" class="btn btn-warning">Edita</a></td>
-                <td>
-                    <form action="{{ route('app-lector-ruta.destroy', $appLectorRuta->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Elimina</button>
-                    </form>
-                </td>
-                <td>{{ $appLectorRuta->usuario->nombre }}</td>
-                <td>{{ $appLectorRuta->ruta->nombre }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-</div>
-</body>
-</html>
+    @include('partials.confirmation-modal')
+    @include('partials.edition-modal')
+
+    @if(session('success'))
+        <script>
+            let successMessage = "{{ session('success') }}";
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            let errorMessage = "{{ session('error') }}";
+        </script>
+    @endif
+@endsection

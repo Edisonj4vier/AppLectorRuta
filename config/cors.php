@@ -31,4 +31,6 @@ return [
 
     'supports_credentials' => false,
 
+    'referrer_policy' => 'strict-origin-when-cross-origin',
+
 ];
