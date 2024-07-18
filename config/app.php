@@ -185,4 +185,5 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'referrer_policy' => env('REFERRER_POLICY', 'strict-origin-when-cross-origin'),
 ];

@@ -36,5 +36,11 @@ Route::middleware(['auth.token'])->group(function () {
 });
 //------Lecturas
 Route::get('/lecturas', [ConsumoLecturaController::class, 'index'])->name('lecturas.index');
-Route::post('/lecturas/sincronizar', [ConsumoLecturaController::class, 'sincronizar'])->name('lecturas.sincronizar');
+Route::post('/lecturas/sincronizar', [ConsumoLecturaController::class, 'actualizarAAPPLectura'])->name('lecturas.sincronizar');
 Route::delete('/lecturas/{cuenta}', [ConsumoLecturaController::class, 'destroy'])->name('lecturas.destroy');
+Route::get('/lecturas/{cuenta}/edit', [ConsumoLecturaController::class, 'edit'])->name('lecturas.edit');
+Route::put('/lecturas/{cuenta}', [ConsumoLecturaController::class, 'update'])->name('lecturas.update');
+
+Route::get('/test-referrer', function () {
+    return view('test-referrer');
+});

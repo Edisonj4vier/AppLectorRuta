@@ -145,7 +145,7 @@ function initializeEvents() {
 }
 
 // Manejo del formulario de edición
-$(document).on('click', '.edit-btn', function() {
+$(document).on('click', '#appLectorRutaTable .edit-btn', function() {
     const id = $(this).data('id');
     $.ajax({
         url: `/app-lector-ruta/${id}/edit`,
